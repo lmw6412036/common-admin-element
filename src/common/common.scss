@@ -1,0 +1,16 @@
+@import "base";
+@import "var";
+@import "mixin";
+
+/*flex*/
+@for $i from 0 to 2 {
+  .flex#{$i} {
+    flex: $i $i auto;
+  }
+}
+
+@each $pos in left, right, center {
+  .#{$pos} {
+    text-align: $pos;
+  }
+}
