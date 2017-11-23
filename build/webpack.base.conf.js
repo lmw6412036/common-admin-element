@@ -3,8 +3,12 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
+var HtmlWebpackIncludeAssetsPlugin = require("html-webpack-include-assets-plugin")
+var publicPath = process.env.NODE_ENV === 'production'
+  ? config.build.assetsPublicPath
+  : config.dev.assetsPublicPath
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
@@ -63,5 +67,16 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new HtmlWebpackIncludeAssetsPlugin({
+      assets: [
+        "static/lib/md5-min.js",
+        "static/lib/sha512.min.js",
+        "static/lib/url.min.js",
+      ],
+      append: false,
+      publicPath: publicPath
+    })
+  ]
 }

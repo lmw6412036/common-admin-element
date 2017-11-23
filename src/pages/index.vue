@@ -1,6 +1,6 @@
 <template>
     <div>
-        引导页
+
     </div>
 </template>
 
@@ -12,7 +12,7 @@
         computed: {},
         components: {},
         mounted() {
-
+            this.$router.push("/home");
         },
         beforeDestroy() {
 
