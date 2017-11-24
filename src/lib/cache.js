@@ -36,3 +36,6 @@ let prefix = config.key_prefix + (window.version || "") + "_";
 
 const TOKEN_CACHE_KEY = prefix + "token_"
 export const tokenCache = new cache(TOKEN_CACHE_KEY)
+
+const USER_CACHE_KEY = prefix + "user_"
+export const userToken = new cache(USER_CACHE_KEY)
