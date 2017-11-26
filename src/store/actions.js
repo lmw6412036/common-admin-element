@@ -1,4 +1,9 @@
 import * as types from "./types"
-export default {
+import http from "../lib/http"
 
+export default {
+  handleMenus({commit, state}, {menus, path}) {
+    commit(types.MENUS, menus);
+    commit("setBreadCrumb", path);
+  }
 }
