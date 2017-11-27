@@ -1,6 +1,7 @@
 import Home from "../pages/home.vue"
 import Main from "../pages/main.vue"
 import MenuList from "../pages/menu/list.vue"
+import MenuAdd from "../pages/menu/add.vue"
 
 export default [
   {
@@ -11,7 +12,11 @@ export default [
     },
     children: [
       {path: "", component: Main},
-      {path: "menu", component: MenuList}
+      {
+        path: "menu",
+        component: MenuList,
+        children: [{path: "add", component: MenuAdd}]
+      }
     ]
   }
 ]

@@ -75,7 +75,6 @@
       this.mainStyle = {
         height: `${height - 60}px`
       }
-
       this.getAdminMenu();
     },
     mounted() {
