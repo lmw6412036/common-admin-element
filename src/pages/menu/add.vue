@@ -1,69 +1,68 @@
 <template>
-  <div class="page form-page">
-    <page-header>添加菜单</page-header>
-    <div class="main-form">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="活动名称">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label="活动区域">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="活动时间">
-          <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
-          </el-col>
-          <el-col class="line" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="即时配送">
-          <el-switch v-model="form.delivery"></el-switch>
-        </el-form-item>
-        <el-form-item label="活动性质">
-          <el-checkbox-group v-model="form.type">
-            <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-            <el-checkbox label="地推活动" name="type"></el-checkbox>
-            <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-            <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="特殊资源">
-          <el-radio-group v-model="form.resource">
-            <el-radio label="线上品牌商赞助"></el-radio>
-            <el-radio label="线下场地免费"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="活动形式">
-          <el-input type="textarea" v-model="form.desc"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          <el-button>取消</el-button>
-        </el-form-item>
-      </el-form>
+    <div class="page form-page">
+        <page-header>{{id?'修改':'添加'}}菜单</page-header>
+        <div v-loading="loading" class="main-form">
+            <el-form ref="form" :model="form" label-width="80px">
+                <el-row :gutter="20">
+                    <el-col :span="6">
+                        <el-form-item label="菜单名称">
+                            <el-input placeholder="请输入菜单名称" v-model="form.name"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="菜单标识">
+                            <el-input placeholder="请输入菜单标识" v-model="form.title"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="URL">
+                            <el-input placeholder="请输入URL" v-model="form.url"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-form-item label="菜单分类">
+                    <el-radio-group v-model="form.cate">
+                        <el-radio v-for="menu in menus" :key="menu.id" :label="menu.id" :value="menu.id"
+                                  name="type">{{menu.name}}
+                        </el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item>
+                    <el-button v-if="id" :loading="loading" type="primary" @click="edit">保存</el-button>
+                    <el-button v-else :loading="loading" type="primary" @click="add">立即创建</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
   import PageHeader from "../../components/page-header.vue"
+  import * as types from "../../store/types"
+  import {mapGetters} from "vuex"
+  import http from "../../lib/http"
 
   export default {
     data() {
       return {
-        form:{}
+        id: "",
+        loading: false,
+        form: {}
       };
     },
-    computed: {},
+    computed: {
+      ...mapGetters({
+        menus: types.MENUS
+      })
+    },
     components: {
       PageHeader
     },
     created() {
+      let {id} = this.$route.params;
+      id && this.getDetail(id) && (this.id = id);
     },
     mounted() {
 
@@ -71,12 +70,45 @@
     beforeDestroy() {
 
     },
-    methods: {}
+    methods: {
+      async getDetail(id) {
+        this.loading = true;
+        let ret = await http('/menu/detail', {id});
+        if (ret.errno == 0) {
+          this.form = ret.data
+        }
+        this.loading = false
+      },
+      async add() {
+        this.loading = true;
+        let ret = await http("/menu/add", this.form);
+        this.loading = false
+        if (ret.errno == 0) {
+          this.$message({
+            type: "success",
+            message: "添加成功"
+          })
+          this.$router.go(-1);
+        }
+      },
+      async edit() {
+        this.loading = true;
+        let ret = await http("/menu/update", {...this.form, id: this.id});
+        this.loading = false
+        if (ret.errno == 0) {
+          this.$message({
+            type: "success",
+            message: "修改成功"
+          })
+          this.$router.go(-1);
+        }
+      }
+    }
   };
 </script>
 
 <style scoped lang="scss">
-  .form-page {
-    z-index: 10000;
-  }
+    .form-page {
+        z-index: 10000;
+    }
 </style>

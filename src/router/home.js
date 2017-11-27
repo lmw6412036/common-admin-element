@@ -15,7 +15,9 @@ export default [
       {
         path: "menu",
         component: MenuList,
-        children: [{path: "add", component: MenuAdd}]
+        children: [
+          {path: "add", component: MenuAdd},
+          {path: "edit/:id", component: MenuAdd}]
       }
     ]
   }
