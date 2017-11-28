@@ -19,7 +19,6 @@
                 </el-form-item>
             </el-form>
         </div>
-
         <div class="main-table">
             <el-table
                     v-loading="loading"
@@ -54,7 +53,6 @@
                 </el-table-column>
             </el-table>
         </div>
-
         <router-view></router-view>
     </div>
 </template>
@@ -143,8 +141,4 @@
 
 <style scoped lang="scss">
 
-
-    .filter-form {
-        padding: 10px 20px;
-    }
 </style>

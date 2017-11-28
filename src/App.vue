@@ -19,6 +19,9 @@
     box-sizing: border-box;
   }
 
+  .filter-form {
+    padding: 10px 20px;
+  }
   .main-table {
     padding: 0 20px;
   }
