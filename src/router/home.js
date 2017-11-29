@@ -3,6 +3,7 @@ import Main from "../pages/main.vue"
 import MenuList from "../pages/menu/list.vue"
 import MenuAdd from "../pages/menu/add.vue"
 import Rule from "../pages/rule/list.vue"
+import RoleAdd from '../pages/rule/add.vue'
 
 export default [
   {
@@ -21,8 +22,12 @@ export default [
           {path: "edit/:id", component: MenuAdd}]
       },
       {
-        path: "rule",
-        component: Rule
+        path: "role",
+        component: Rule,
+        children: [
+          {path: "add", component: RoleAdd},
+          {path: "edit/:id", component: RoleAdd}
+        ]
       }
     ]
   }
