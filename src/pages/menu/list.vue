@@ -120,7 +120,7 @@
 
       },
       async getMenuCates() {
-        let cates = await http('/coclass/list', {fid: 2})
+        let cates = await http('/coclass', {fid: 2})
         if (cates.errno == 0) {
           this.cates = cates.data;
         }

@@ -1,9 +1,10 @@
 <template>
-    <el-breadcrumb class="bread-crumb" separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>{{fMenu}}</el-breadcrumb-item>
-        <el-breadcrumb-item>{{sMenu}}</el-breadcrumb-item>
-    </el-breadcrumb>
+  <el-breadcrumb class="bread-crumb" separator-class="el-icon-arrow-right">
+    <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item>{{fMenu}}</el-breadcrumb-item>
+    <el-breadcrumb-item>{{sMenu}}</el-breadcrumb-item>
+    <slot></slot>
+  </el-breadcrumb>
 </template>
 
 <script>
@@ -39,11 +40,11 @@
 </script>
 
 <style scoped lang="scss">
-    @import "../common/common";
+  @import "../common/common";
 
-    .bread-crumb {
-        padding-left: 20px;
-        @include h_lh(45px);
-        background-color: #F8F8F8;
-    }
+  .bread-crumb {
+    padding-left: 20px;
+    @include h_lh(45px);
+    background-color: #F8F8F8;
+  }
 </style>

@@ -4,6 +4,8 @@ import MenuList from "../pages/menu/list.vue"
 import MenuAdd from "../pages/menu/add.vue"
 import Rule from "../pages/rule/list.vue"
 import RoleAdd from '../pages/rule/add.vue'
+import Coclass from "../pages/coclass/list.vue"
+import CoclassAdd from '../pages/coclass/add.vue'
 
 export default [
   {
@@ -27,6 +29,14 @@ export default [
         children: [
           {path: "add", component: RoleAdd},
           {path: "edit/:id", component: RoleAdd}
+        ]
+      },
+      {
+        path: "coclass",
+        component: Coclass,
+        children: [
+          {path: "add", component: CoclassAdd},
+          {path: "edit/:id", component: CoclassAdd}
         ]
       }
     ]
