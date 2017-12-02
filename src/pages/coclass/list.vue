@@ -87,7 +87,12 @@
     },
     watch: {
       $route(newV, oldV) {
-        this.init(newV)
+        if (newV.path === oldV.path && newV.fullPath !== oldV.fullPath) {
+          this.init(newV);
+        }
+        if (/add|edit/.test(oldV.path)) {
+          this.init(newV);
+        }
         this.getList();
       }
     },

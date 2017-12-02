@@ -20,8 +20,20 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row :gutter="20" v-if="form.fid">
-                    <el-col :span="6">
+                <el-row :gutter="20">
+                    <el-col v-if="id" :span="6">
+                        <el-form-item label="父级名称">
+                            <el-select v-model="form.fid" placeholder="请选择">
+                                <el-option
+                                        v-for="item in list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col v-else :span="6">
                         <el-form-item label="父级名称">
                             <el-input :disabled="true" placeholder="请输入父级名称" v-model="form.fname"></el-input>
                         </el-form-item>
@@ -58,7 +70,6 @@
     },
     created() {
       this.init();
-      this.getData();
     },
     mounted() {
 
@@ -69,33 +80,50 @@
     methods: {
       init() {
         let {fid} = this.$route.query;
-        fid && (this.form.fid = fid);
         let {id} = this.$route.params;
-        id && (this.id = id);
-      },
-      async getData() {
-        let fidObj = await this.getFid();
-        this.$set(this.form, 'fname', fidObj.name)
-        if (this.id) {
-          await this.getDetail(this.id);
+        if (id) {
+          //编辑
+          this.initEdit(id);
+        } else {
+          //添加
+          this.initAdd(fid);
         }
       },
+      async initEdit(id) {
+        this.id = id;
+        let form = await this.getDetail(id);
+        let fid = form.fid;
+        if (!fid) {
+          this.form = form;
+          return
+        }
+        let fidInfo = await this.getDetail(fid);
+        await this.getList(fidInfo.fid);
+        this.form = form;
 
-
-      async getFid() {
-        this.loading = true;
-        let ret = await http('/coclass/detail', {id: this.form.fid});
-        this.loading = false
-        return ret.data
       },
-
+      async initAdd(fid) {
+        this.form.fid = fid;
+        let fidCoclass = await this.getDetail(fid);
+        this.$set(this.form, 'fname', fidCoclass.name);
+      },
+      /*根据id获得coclass详情*/
       async getDetail(id) {
         this.loading = true;
         let ret = await http('/coclass/detail', {id});
-        if (ret.errno == 0) {
-          this.form = ret.data
-        }
         this.loading = false
+        if (ret.errno == 0) {
+          return ret.data
+        } else {
+          return {}
+        }
+      },
+      async getList(fid) {
+        this.loading = true;
+        let ret = await http('/coclass', {fid});
+        this.loading = false
+        this.list = ret.data;
+        return
       },
       async add() {
         this.loading = true;
@@ -127,6 +155,6 @@
 
 <style scoped lang="scss">
     .form-page {
-        z-index: 10000;
+        z-index: 1000;
     }
 </style>
