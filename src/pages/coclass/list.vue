@@ -115,7 +115,6 @@
           });
           this.getList()
         }
-
       },
       async getList() {
         this.loading = true;
