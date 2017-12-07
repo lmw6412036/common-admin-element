@@ -2,7 +2,7 @@
     <div class="page form-page">
         <page-header>{{id?'修改':'添加'}}菜单</page-header>
         <div v-loading="loading" class="main-form">
-            <el-form ref="form" :model="form" label-width="80px">
+            <el-form ref="form" size="small" :model="form" label-width="80px">
                 <el-row :gutter="20">
                     <el-col :span="6">
                         <el-form-item label="菜单名称">
@@ -108,7 +108,5 @@
 </script>
 
 <style scoped lang="scss">
-    .form-page {
-        z-index: 10000;
-    }
+
 </style>

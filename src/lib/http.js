@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "./config"
-import {debug, makeRandom} from "./util";
+import {debug} from "./util";
 import {tokenCache} from "./cache";
 import {Message} from "element-ui"
 
@@ -44,7 +44,13 @@ export default function (service, options, conf) {
     })
     .then((data) => {
       if (data.errno != 0) {
-        Message.error(data.errmsg || "服务器错误：" + data.errno);
+        let errmsg = "";
+        if (typeof data.errmsg != "string") {
+          errmsg = data.errmsg[Object.keys(data.errmsg)[0]]
+        } else {
+          errmsg = data.errmsg;
+        }
+        Message.error(errmsg || "服务器错误：" + data.errno);
       }
       return data;
     });

@@ -4,4 +4,7 @@ export default {
   [types.CURRENT_MENU](state, payload) {
     state[types.CURRENT_MENU] = payload
   },
+  [types.MENUS](state, payload) {
+    state[types.MENUS] = payload
+  }
 }

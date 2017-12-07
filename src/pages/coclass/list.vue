@@ -1,68 +1,72 @@
 <template>
-    <div class="page">
-        <bread-crumb>
-            <el-breadcrumb-item v-if="form.fid">{{form.fname}}</el-breadcrumb-item>
-        </bread-crumb>
-        <div class="filter-form">
-            <el-form :inline="true" :model="form" class="demo-form-inline">
-                <el-form-item label="关键词">
-                    <el-input placeholder="关键词" v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary">查询</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="handelAdd({id:form.fid})">添加</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
+  <div class="page main-page-box">
+    <div class="main-box">
+      <div class="filter-box">
+        <el-form :inline="true" size="small" :model="form"  class="my-filter-box">
+          <el-form-item label="关键词" class="my-form-item">
+            <el-input placeholder="关键词" v-model="form.name"></el-input>
+          </el-form-item>
+          <el-form-item class="my-form-item">
+            <el-button type="primary">查询</el-button>
+          </el-form-item>
+          <el-form-item class="my-form-item">
+            <el-button type="primary" @click="handelAdd({id:form.fid})">添加</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
 
-        <div class="main-table">
-            <el-table
-                    v-loading="loading"
-                    :data="list"
-                    stripe
-                    border
-                    :height="tableHeight">
-                <el-table-column
-                        prop="id"
-                        label="编号"
-                        width="100">
-                </el-table-column>
-                <el-table-column
-                        prop="name"
-                        label="名称"
-                        width="200">
-                </el-table-column>
-                <el-table-column
-                        label="操作">
-                    <template slot-scope="scope">
-                        <el-button type="text" @click="handelAdd(scope.row)" size="small">
-                            添加下级
-                        </el-button>
-                        <el-button v-show="scope.row.sons>0" type="text" @click="handelOpen(scope.row)" size="small">
-                            展开下级
-                        </el-button>
-                        <el-button type="text" @click="handelEdit(scope.row)" size="small">编辑</el-button>
-                        <el-button v-show="scope.row.sons==0" type="text" @click="handelDel(scope.row)" size="small">
-                            删除
-                        </el-button>
-                    </template>
-                </el-table-column>
+      <div class="main-tabs">
+        <el-tabs v-model="activeTab" class="my-tabs">
+          <el-tab-pane class="my-tab-pane" :label="tab.label" :name="tab.name" :key="tab.name"
+                       v-for="tab in tabs">
+            <el-table v-loading="loading" :height="mainTableMixin_tableHeight" stripe size="small" :data="list"
+                      style="width: 100%">
+
+              <el-table-column
+                prop="id"
+                label="编号"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="name"
+                label="名称"
+                width="200">
+              </el-table-column>
+              <el-table-column
+                label="操作">
+                <template slot-scope="scope">
+                  <el-button type="text" @click="handelAdd(scope.row)" size="small">
+                    添加下级
+                  </el-button>
+                  <el-button v-show="scope.row.sons>0" type="text" @click="handelOpen(scope.row)" size="small">
+                    展开下级
+                  </el-button>
+                  <el-button type="text" @click="handelEdit(scope.row)" size="small">编辑</el-button>
+                  <el-button v-show="scope.row.sons==0" type="text" @click="handelDel(scope.row)" size="small">
+                    删除
+                  </el-button>
+                </template>
+              </el-table-column>
+
             </el-table>
-        </div>
-        <router-view></router-view>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
     </div>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-  import BreadCrumb from "../../components/bread-crumb.vue"
   import {mainTableMixin} from "../../lib/mixin"
   import http from "../../lib/http"
 
   export default {
     data() {
       return {
+        loading:false,
+        activeTab: '',
+        tabs: [{name: 'coclass', label: '数据字典'}],
         list: [],
         form: {
           fid: 0,
@@ -72,10 +76,9 @@
     },
     computed: {},
     mixins: [mainTableMixin],
-    components: {
-      BreadCrumb
-    },
+    components: {},
     created() {
+      this.activeTab = this.tabs[0].name
       this.init(this.$route);
       this.getList();
     },

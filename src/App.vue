@@ -19,6 +19,10 @@
     box-sizing: border-box;
   }
 
+  .form-page {
+    z-index: 1000;
+  }
+
   .my-tabs .el-tabs__header {
     margin-bottom: 0px;
   }
