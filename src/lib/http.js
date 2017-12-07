@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "./config"
-import {debug} from "./util";
+import {debug, makeRandom} from "./util";
 import {tokenCache} from "./cache";
 import {Message} from "element-ui"
 
@@ -19,7 +19,8 @@ export default function (service, options, conf) {
     },
     token = tokenCache.get();
   token && (data.token = token);
-
+  //data.random = makeRandom(4);
+  //const sign = hex_md5(hex_md5(config.password) + JSON.stringify(data));
   let axiosConfig = {
     url: data.mock ? "/api" : config.api_url + service,
     method: "post",
@@ -43,7 +44,7 @@ export default function (service, options, conf) {
     })
     .then((data) => {
       if (data.errno != 0) {
-        Message.error(getErrmsg(data.errmsg));
+        Message.error(data.errmsg || "服务器错误：" + data.errno);
       }
       return data;
     });
