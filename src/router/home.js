@@ -4,6 +4,7 @@ import HomeMain from "../pages/home/main.vue"
 import Menu from "./home/menu"
 import Rule from "./home/rule"
 import Coclass from "./home/coclass"
+import Questionnaire from './home/questionnaire'
 
 export default [
   {
@@ -16,7 +17,8 @@ export default [
       {path: "", component: HomeMain},
       ...Menu,
       ...Rule,
-      ...Coclass
+      ...Coclass,
+      ...Questionnaire
     ]
   }
 ]
