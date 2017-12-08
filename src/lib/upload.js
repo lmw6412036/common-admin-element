@@ -12,31 +12,14 @@ function getErrmsg(errmsg) {
 }
 
 export default function (service, options, conf) {
-  let baseParams = config.base_params,
-    data = {
-      ...baseParams,
-      ...options
-    },
-    token = tokenCache.get();
-  token && (data.token = token);
   //data.random = makeRandom(4);
   //const sign = hex_md5(hex_md5(config.password) + JSON.stringify(data));
   let axiosConfig = {
-    url: data.mock ? "/api" : config.api_url + service,
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    data: data
-  }
-
-  if (conf) {
-    axiosConfig = Object.assign({}, axiosConfig, conf);
+    url: options.mock ? "/api" : config.api_url + service,
   }
 
   debug("==>" + service);
-  debug(axiosConfig);
-  return axios(axiosConfig)
+  return axios.post(axiosConfig.url,options,conf)
     .then((res) => {
       if (res.status == 200) {
         debug("<==" + service, res.data);

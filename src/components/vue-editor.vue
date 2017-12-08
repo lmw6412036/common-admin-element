@@ -10,6 +10,8 @@
   import Quill from "quill"
   import "quill/dist/quill.snow.css"
   import {debug} from "../lib/util";
+  import uploadAjax from "../lib/upload"
+
 
   export default {
     props: {
@@ -72,11 +74,22 @@
 
       imageChange() {
         let files = this.$refs.file.files;
-        debug('files',this.editor.getSelection().index, files);
+        this.upload(files);
       },
 
       getHtml() {
         return this.editor.container.firstChild.innerHTML;
+      },
+
+      async upload(files) {
+        for (let i = 0; i < files.length; i++) {
+          let formdata = new FormData();
+          formdata.append("file",files[i]);
+          let ret = await uploadAjax("/upload", formdata, {
+            headers: {'Content-Type': 'application/x-www-form-urlencoded '}
+          });
+          debug('ret', ret);
+        }
       }
 
 
