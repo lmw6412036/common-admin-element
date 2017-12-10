@@ -1,9 +1,9 @@
 <template>
-  <div class="vue-editor">
-    <div id="editorbox" class="vue-editor" v-html="value">
+    <div class="vue-editor" v-loading="loading">
+        <div id="editorbox" class="vue-editor">
+        </div>
+        <input ref="file" type="file" @change="imageChange">
     </div>
-    <input ref="file" type="file" @change="imageChange">
-  </div>
 </template>
 
 <script>
@@ -15,13 +15,17 @@
 
   export default {
     props: {
+      type: String,
       value: String,
     },
     data() {
       return {
+        loading: false,
         editor: null,
         toolbarOptions: [
-          ['bold', 'italic', 'underline'],        // toggled buttons
+          ['bold', 'italic', 'underline'], // toggled buttons
+          ['blockquote', 'code-block'],
+          [{'list': 'ordered'}, {'list': 'bullet'}],
           ['image'],
           ['clean']                                         // remove formatting button
         ]
@@ -36,15 +40,16 @@
 
     },
     watch: {
-      value() {
-        this.editor && this.editor.update();
+      value(newV) {
+        this.editor && this.editor.pasteHTML(newV);
       }
     },
     methods: {
       eidtorInit() {
         let editorDom = document.querySelector("#editorbox");
-        if (!editorDom || !this.value) {
-          setTimeout(this.eidtorInit, 200)
+        if (!editorDom) {
+          setTimeout(this.eidtorInit, 20);
+          return
         } else {
           if (this.editor) {
             return
@@ -84,11 +89,16 @@
       async upload(files) {
         for (let i = 0; i < files.length; i++) {
           let formdata = new FormData();
-          formdata.append("file",files[i]);
+          formdata.append("file", files[i]);
+          this.loading = true;
           let ret = await uploadAjax("/upload", formdata, {
             headers: {'Content-Type': 'application/x-www-form-urlencoded '}
           });
+          this.loading = false
           debug('ret', ret);
+          if (ret.errno == 0) {
+            this.editor.insertEmbed(this.editor.getSelection().index, 'image', ret.data.url);
+          }
         }
       }
 
@@ -98,11 +108,14 @@
 </script>
 
 <style scoped lang="scss">
-  .vue-editor {
-    > input {
-      opacity: 0;
-      height: 0;
-      width: 0;
+    .vue-editor {
+        > input {
+            opacity: 0;
+            height: 0;
+            width: 0;
+            position: fixed;
+            left: -100px;
+            top: -100px;
+        }
     }
-  }
 </style>

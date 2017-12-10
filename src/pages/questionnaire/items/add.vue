@@ -1,19 +1,19 @@
 <template>
     <div class="page form-page">
-        <page-header>{{id?'修改':'添加'}}问卷</page-header>
+        <page-header>{{id?'修改':'添加'}}问卷题目</page-header>
         <div v-loading="loading" class="main-form">
             <el-form ref="form" :model="form" size="small" label-width="80px">
                 <el-row :gutter="20">
                     <el-col :span="12">
-                        <el-form-item label="问卷名称">
-                            <el-input placeholder="请输入问卷名称" v-model="form.name"></el-input>
+                        <el-form-item label="题目">
+                            <el-input type="textarea" :rows="2" placeholder="请输入题目" v-model="form.name"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span="24">
-                        <el-form-item label="问卷介绍">
-                            <vue-editor ref="vueEditor" :type="type" v-model="form.desc"></vue-editor>
+                    <el-col :span="6">
+                        <el-form-item label="题目排序">
+                            <el-input placeholder="排序值" v-model="form.sort"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -27,13 +27,13 @@
 </template>
 
 <script>
-  import PageHeader from "../../components/page-header.vue"
-  import http from "../../lib/http"
-  import VueEditor from "../../components/vue-editor"
+  import PageHeader from "../../../components/page-header.vue"
+  import http from "../../../lib/http"
 
   export default {
     data() {
       return {
+        questionnaireId: "",
         id: "",
         type: "",
         loading: false,
@@ -42,11 +42,12 @@
     },
     computed: {},
     components: {
-      PageHeader, VueEditor
+      PageHeader
     },
     created() {
-      let {id} = this.$route.params;
-      id && this.getDetail(id) && (this.id = id) && (this.type = "edit");
+      let {id, questionnaireId} = this.$route.params;
+      this.questionnaireId = questionnaireId;
+      id && this.getDetail(id) && (this.id = id);
     },
     mounted() {
 
@@ -57,7 +58,7 @@
     methods: {
       async getDetail(id) {
         this.loading = true;
-        let ret = await http('/questionnaire/detail', {id});
+        let ret = await http('/questionnaire/items/detail', {id, questionnaire: this.questionnaireId});
         if (ret.errno == 0) {
           this.form = ret.data
         }
@@ -65,9 +66,9 @@
       },
       async add() {
         this.loading = true;
-        let ret = await http("/questionnaire/add", {
+        let ret = await http("/questionnaire/items/add", {
           ...this.form,
-          desc: this.$refs.vueEditor.getHtml()
+          questionnaire: this.questionnaireId
         });
         this.loading = false
         if (ret.errno == 0) {
@@ -80,10 +81,10 @@
       },
       async edit() {
         this.loading = true;
-        let ret = await http("/questionnaire/update", {
+        let ret = await http("/questionnaire/items/update", {
           ...this.form,
           id: this.id,
-          desc: this.$refs.vueEditor.getHtml()
+          questionnaire: this.questionnaireId
         });
         this.loading = false
         if (ret.errno == 0) {
