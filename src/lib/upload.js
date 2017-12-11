@@ -1,7 +1,6 @@
 import axios from "axios";
 import config from "./config"
 import {debug} from "./util";
-import {tokenCache} from "./cache";
 import {Message} from "element-ui"
 
 function getErrmsg(errmsg) {
@@ -19,7 +18,7 @@ export default function (service, options, conf) {
   }
 
   debug("==>" + service);
-  return axios.post(axiosConfig.url,options,conf)
+  return axios.post(axiosConfig.url, options, conf)
     .then((res) => {
       if (res.status == 200) {
         debug("<==" + service, res.data);
@@ -28,12 +27,7 @@ export default function (service, options, conf) {
     })
     .then((data) => {
       if (data.errno != 0) {
-        let errmsg = "";
-        if (typeof data.errmsg != "string") {
-          errmsg = data.errmsg[Object.keys(data.errmsg)[0]]
-        } else {
-          errmsg = data.errmsg;
-        }
+        let errmsg = getErrmsg(data.errmsg);
         Message.error(errmsg || "服务器错误：" + data.errno);
       }
       return data;
