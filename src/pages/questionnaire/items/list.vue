@@ -1,102 +1,106 @@
 <template>
-    <div class="page main-page-box">
-        <div class="main-box">
-            <div class="filter-box">
-                <el-form size="small" :inline="true" :model="form" class="my-filter-box">
-                    <el-form-item label="关键词" class="my-form-item">
-                        <el-input placeholder="关键词" v-model="form.name"></el-input>
-                    </el-form-item>
-                    <el-form-item class="my-form-item">
-                        <el-button type="primary">查询</el-button>
-                    </el-form-item>
-                    <el-form-item class="my-form-item">
-                        <el-button type="primary" @click="handleClick('add')">添加</el-button>
-                    </el-form-item>
-                </el-form>
-            </div>
+  <div class="page main-page-box">
+    <div class="main-box">
+      <div class="filter-box">
+        <el-form size="small" :inline="true" :model="form" class="my-filter-box">
+          <el-form-item label="关键词" class="my-form-item">
+            <el-input placeholder="关键词" v-model="form.name"></el-input>
+          </el-form-item>
+          <el-form-item class="my-form-item">
+            <el-button type="primary">查询</el-button>
+          </el-form-item>
+          <el-form-item class="my-form-item">
+            <el-button type="primary" @click="handleClick('add')">添加</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
 
-            <div class="main-tabs">
-                <el-tabs v-model="activeTab" class="my-tabs">
-                    <el-tab-pane class="my-tab-pane" :label="tab.label" :name="tab.name" :key="tab.name"
-                                 v-for="tab in tabs">
-                        <el-table v-loading="loading" :height="mainTableMixin_tableHeight" stripe size="small"
-                                  :data="list"
-                                  style="width: 100%">
-                            <el-table-column type="expand">
-                                <template slot-scope="scope">
-                                    <el-form size="small" label-position="left" inline>
-                                        <el-form-item :label="option.showsort||option.index+1"
-                                                      :key="option.id"
-                                                      v-for="(option,index) in scope.row.options"><span>{{option.name}}({{option.score}})</span>
-                                        </el-form-item>
-                                    </el-form>
-                                </template>
-                            </el-table-column>
-                            <el-table-column
-                                    prop="id"
-                                    label="编号"
-                                    width="100">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="name"
-                                    label="名称">
-                            </el-table-column>
-                            <el-table-column
-                                    label="操作"
-                                    width="150">
-                                <template slot-scope="scope">
-                                    <el-button type="text" @click="handelOption(scope.row)" size="small">选项</el-button>
-                                    <el-button type="text" @click="handelEdit(scope.row)" size="small">编辑</el-button>
-                                    <el-button type="text" @click="handelDel(scope.row)" size="small">删除</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-tab-pane>
-                </el-tabs>
-            </div>
-        </div>
-        <!--<div class="main-footer">
-            <el-pagination
-                    :page-size="10"
-                    layout="prev, pager, next, jumper"
-                    :total="total">
-            </el-pagination>
-        </div>-->
-        <el-dialog title="题目选项"
-                   :modal="false"
-                   :visible.sync="showOptions" ref="options">
-            <el-table v-loading="optionLoading" :data="itemOptions" size="small">
-                <el-table-column label="序号" type="index"></el-table-column>
-                <el-table-column label="编号">
-                    <template slot-scope="scope">
-                        <el-input v-model="scope.row.showsort" size="mini"></el-input>
-                    </template>
-                </el-table-column>
-                <el-table-column label="选项">
-                    <template slot-scope="scope">
-                        <el-input v-model="scope.row.name" size="mini"></el-input>
-                    </template>
-                </el-table-column>
-                <el-table-column label="得分">
-                    <template slot-scope="scope">
-                        <el-input v-model="scope.row.score" size="mini"></el-input>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作">
-                    <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="handleClick('delOption',scope.row,scope.$index)">
-                            删除
-                        </el-button>
-                    </template>
-                </el-table-column>
+      <div class="main-tabs">
+        <el-tabs v-model="activeTab" class="my-tabs">
+          <el-tab-pane class="my-tab-pane" :label="tab.label" :name="tab.name" :key="tab.name"
+                       v-for="tab in tabs">
+            <el-table v-loading="loading" :height="mainTableMixin_tableHeight" stripe size="small"
+                      :data="list"
+                      style="width: 100%">
+              <el-table-column type="expand">
+                <template slot-scope="scope">
+                  <el-form size="small" label-position="left" inline>
+                    <el-form-item :label="option.showsort||option.index+1"
+                                  :key="option.id"
+                                  v-for="(option,index) in scope.row.options">
+                      <span>{{option.name}}({{option.score}})</span>
+                    </el-form-item>
+                  </el-form>
+                </template>
+              </el-table-column>
+              <el-table-column type="index" label="序号"></el-table-column>
+              <el-table-column prop="type_info.name" label="类型" width="80"></el-table-column>
+              <el-table-column
+                prop="name"
+                label="名称">
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                width="150">
+                <template slot-scope="scope">
+                  <el-button type="text" @click="handelOption(scope.row)" size="small">选项</el-button>
+                  <el-button type="text" @click="handelEdit(scope.row)" size="small">编辑</el-button>
+                  <el-button type="text" @click="handelDel(scope.row)" size="small">删除</el-button>
+                </template>
+              </el-table-column>
             </el-table>
-            <div slot="footer">
-                <el-button type="primary" size="small" @click="handleClick('saveOption')">保存</el-button>
-                <el-button type="primary" size="small" @click="handleClick('addOption')">添加</el-button>
-            </div>
-        </el-dialog>
-        <router-view></router-view>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
     </div>
+    <!--<div class="main-footer">
+        <el-pagination
+                :page-size="10"
+                layout="prev, pager, next, jumper"
+                :total="total">
+        </el-pagination>
+    </div>-->
+    <el-dialog title="题目选项"
+               :modal="false"
+               :visible.sync="showOptions" ref="options">
+      <el-table v-loading="optionLoading" :data="itemOptions" size="small" style="width: 100%">
+        <el-table-column label="序号" type="index"></el-table-column>
+        <el-table-column label="编号">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.showsort" size="mini"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="选项">
+          <template slot-scope="scope">
+            <el-autocomplete
+              size="mini"
+              class="inline-input"
+              v-model="scope.row.name"
+              :fetch-suggestions="querySearch"
+              placeholder="请输入选项"
+            ></el-autocomplete>
+          </template>
+        </el-table-column>
+        <el-table-column label="得分">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.score" size="mini"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="handleClick('delOption',scope.row,scope.$index)">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer">
+        <el-button type="primary" size="small" @click="handleClick('saveOption')">保存</el-button>
+        <el-button type="primary" size="small" @click="handleClick('addOption')">添加</el-button>
+      </div>
+    </el-dialog>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
@@ -117,7 +121,19 @@
         item: '',
         itemOptions: [],
         total: 0,
-        form: {}
+        form: {},
+        defaultOptions: [
+          {value: '几乎每天都有'},
+          {value: '一周3-4次'},
+          {value: '一周1-2次'},
+          {value: '一月1-2次'},
+          {value: '没有或几乎没有/不知道'},
+          {value: '是的'},
+          {value: '没有/不知道'},
+          {value: '有'},
+          {value: '没有'},
+          {value: '不知道'},
+        ]
       };
     },
     computed: {},
@@ -143,6 +159,12 @@
       }
     },
     methods: {
+      querySearch(key, cb) {
+        let data = this.defaultOptions.filter((res) => {
+          return res.value.indexOf(key) >= 0
+        })
+        cb(key ? data : this.defaultOptions);
+      },
       handleClick(type, data, index) {
         switch (type) {
           case "add":
@@ -272,7 +294,7 @@
 </script>
 
 <style scoped lang="scss">
-    .page {
-        z-index: 2;
-    }
+  .page {
+    z-index: 2;
+  }
 </style>

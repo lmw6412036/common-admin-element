@@ -1,29 +1,43 @@
 <template>
-    <div class="page form-page">
-        <page-header>{{id?'修改':'添加'}}问卷</page-header>
-        <div v-loading="loading" class="main-form">
-            <el-form ref="form" :model="form" size="small" label-width="80px">
-                <el-row :gutter="20">
-                    <el-col :span="12">
-                        <el-form-item label="问卷名称">
-                            <el-input placeholder="请输入问卷名称" v-model="form.name"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :span="24">
-                        <el-form-item label="问卷介绍">
-                            <vue-editor ref="vueEditor" :type="type" v-model="form.desc"></vue-editor>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-form-item>
-                    <el-button v-if="id" :loading="loading" type="primary" @click="edit">保存</el-button>
-                    <el-button v-else :loading="loading" type="primary" @click="add">立即创建</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
+  <div class="page form-page">
+    <page-header>{{id?'修改':'添加'}}问卷</page-header>
+    <div v-loading="loading" class="main-form">
+      <el-form ref="form" :model="form" size="small" label-width="160px">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="问卷名称">
+              <el-input placeholder="请输入问卷名称" v-model="form.name"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item label="开启题目自定义选项">
+              <el-switch v-model="form.is_diy_options"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20" v-if="!form.is_diy_options">
+          <el-col :span="12">
+            <el-form-item label="通用选项设置">
+              <el-input type="textarea" :rows="5" v-model="form.public_options" placeholder="通用选项设置"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="问卷介绍">
+              <vue-editor ref="vueEditor" :type="type" v-model="form.desc"></vue-editor>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item>
+          <el-button v-if="id" :loading="loading" type="primary" @click="edit">保存</el-button>
+          <el-button v-else :loading="loading" type="primary" @click="add">立即创建</el-button>
+        </el-form-item>
+      </el-form>
     </div>
+  </div>
 </template>
 
 <script>
@@ -60,6 +74,7 @@
         let ret = await http('/questionnaire/detail', {id});
         if (ret.errno == 0) {
           this.form = ret.data
+          this.form.is_diy_options = !!this.form.is_diy_options;
         }
         this.loading = false
       },
@@ -67,6 +82,7 @@
         this.loading = true;
         let ret = await http("/questionnaire/add", {
           ...this.form,
+          is_diy_options: this.form.is_diy_options ? 1 : 0,
           desc: this.$refs.vueEditor.getHtml()
         });
         this.loading = false
@@ -82,6 +98,7 @@
         this.loading = true;
         let ret = await http("/questionnaire/update", {
           ...this.form,
+          is_diy_options: this.form.is_diy_options ? 1 : 0,
           id: this.id,
           desc: this.$refs.vueEditor.getHtml()
         });
@@ -99,7 +116,7 @@
 </script>
 
 <style scoped lang="scss">
-    .form-page {
-        z-index: 1100;
-    }
+  .form-page {
+    z-index: 1100;
+  }
 </style>
